@@ -19,6 +19,7 @@ uniform float radius <
 uniform float inner_radius <
     ui_type = "slider";
     ui_label = "Inner Radius";
+    ui_tooltip = "Normal Mode -- Sets the inner radius at which the maximum angle is automatically set.\nSpliced Radial mode -- defines the innermost spliced circle's size.";
     ui_min = 0.0;
     ui_max = 1.0;
 > = 0;
@@ -28,7 +29,7 @@ uniform int number_splices <
     ui_label = "Number of Splices";
     ui_min = 1;
     ui_max = 50;
-> = 20;
+> = 10;
 
 uniform float angle <
     ui_type = "slider";
