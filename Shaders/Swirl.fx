@@ -114,9 +114,9 @@ sampler samplerColor
 {
     Texture = texColorBuffer;
     
-    AddressU = WRAP;
-    AddressV = WRAP;
-    AddressW = WRAP;
+    AddressU = MIRROR;
+    AddressV = MIRROR;
+    AddressW = MIRROR;
 
     Width = BUFFER_WIDTH;
     Height = BUFFER_HEIGHT;
