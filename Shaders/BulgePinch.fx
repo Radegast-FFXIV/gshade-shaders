@@ -4,6 +4,7 @@
 /*-----------------------------------------------------------------------------------------------------*/
 #include "ReShade.fxh"
 #include "Blending.fxh"
+#include "TriDither.fxh"
 
 uniform float radius <
     ui_type = "slider";
@@ -149,7 +150,7 @@ float4 PBDistort(float4 pos : SV_Position, float2 texcoord : TEXCOORD0) : SV_TAR
 
         color = tex2D(samplerColor, tc);
         if(render_type)
-            BLENDING_LERP(render_type, base, color, 1 - percent);
+            color.rgb = ComHeaders::Blending::Blend(render_type, base.rgb, color.rgb, 1 - percent);
     }
     else {
         color = tex2D(samplerColor, texcoord);
@@ -157,7 +158,11 @@ float4 PBDistort(float4 pos : SV_Position, float2 texcoord : TEXCOORD0) : SV_TAR
 
 
 
+#if GSHADE_DITHER
+	return float4(color.rgb + TriDither(color.rgb, texcoord, BUFFER_COLOR_BIT_DEPTH), color.a);
+#else
     return color;
+#endif
 }
 
 // Technique

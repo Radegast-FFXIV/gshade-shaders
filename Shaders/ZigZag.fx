@@ -5,6 +5,10 @@
 #include "ReShade.fxh"
 #include "Blending.fxh"
 
+#if GSHADE_DITHER
+    #include "TriDither.fxh"
+#endif
+
 uniform int mode <
     ui_type = "combo";
     ui_label = "Mode";
@@ -209,7 +213,7 @@ float4 ZigZag(float4 pos : SV_Position, float2 texcoord : TEXCOORD0) : SV_TARGET
         color = tex2D(samplerColor, tc);
         
         if(depth >= min_depth && dist < radius && render_type)
-            BLENDING_LERP(render_type, base, color, min(abs(theta), 1));
+            color.rgb = ComHeaders::Blending::Blend(render_type, base.rgb, color.rgb, min(abs(theta), 1));
     
     }
     else
@@ -218,7 +222,11 @@ float4 ZigZag(float4 pos : SV_Position, float2 texcoord : TEXCOORD0) : SV_TARGET
     }
     
 
+#if GSHADE_DITHER
+	return float4(color.rgb + TriDither(color.rgb, texcoord, BUFFER_COLOR_BIT_DEPTH), color.a);
+#else
     return color;
+#endif
 }
 
 // Technique

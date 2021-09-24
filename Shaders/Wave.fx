@@ -5,6 +5,10 @@
 #include "ReShade.fxh"
 #include "Blending.fxh"
 
+#if GSHADE_DITHER
+    #include "TriDither.fxh"
+#endif
+
 uniform int wave_type <
     ui_type = "combo";
     ui_label = "Wave Type";
@@ -168,14 +172,19 @@ float4 Wave(float4 pos : SV_Position, float2 texcoord : TEXCOORD0) : SV_TARGET
         tc.x *= ar;
 
         color = tex2D(samplerColor, tc);
-        if(render_type) BLENDING_LERP(render_type, base, color, 1 - amplitude);
+        if(render_type)
+            color.rgb = ComHeaders::Blending::Blend(render_type, base.rgb, color.rgb, 1 - amplitude);
     }
     else
     {
         color = tex2D(samplerColor, texcoord);
     }
 
+#if GSHADE_DITHER
+	return float4(color.rgb + TriDither(color.rgb, texcoord, BUFFER_COLOR_BIT_DEPTH), color.a);
+#else
     return color;
+#endif
 }
 
 technique Wave
