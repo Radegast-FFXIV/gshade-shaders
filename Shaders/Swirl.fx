@@ -5,6 +5,10 @@
 #include "ReShade.fxh"
 #include "Blending.fxh"
 
+#if GSHADE_DITHER
+    #include "TriDither.fxh"
+#endif
+
 uniform int swirl_mode <
     ui_type = "combo";
     ui_label = "Mode";
@@ -226,7 +230,7 @@ float4 Swirl(float4 pos : SV_Position, float2 texcoord : TEXCOORD0) : SV_TARGET
         color = tex2D(samplerColor, tc);
 
         if(dist < radius)
-            BLENDING_LERP(render_type, base, color, !swirl_mode && render_type ? min(abs(theta), 1) : 1);
+            color.rgb = ComHeaders::Blending::Blend(render_type, base.rgb, color.rgb, !swirl_mode && render_type ? min(abs(theta), 1) : 1);
     }
     else
     {
@@ -234,7 +238,11 @@ float4 Swirl(float4 pos : SV_Position, float2 texcoord : TEXCOORD0) : SV_TARGET
     }
 
     
-    return color;  
+#if GSHADE_DITHER
+    return float4(color.rgb + TriDither(color.rgb, texcoord, BUFFER_COLOR_BIT_DEPTH), color.a);
+#else
+    return color;
+#endif
 }
 
 // Technique
