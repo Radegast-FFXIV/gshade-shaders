@@ -265,7 +265,7 @@ float4 ZigZag(float4 pos : SV_Position, float2 texcoord : TEXCOORD0) : SV_TARGET
             {
                 color = tex2D(samplerColor, tc);
                 if(render_type)
-                    BLENDING_LERP(render_type, base, color, percentSquared, 1);
+                    color.rgb = ComHeaders::Blending::Blend(render_type, base, color, percentSquared);
             }
             else
                 color = tex2D(samplerColor, texcoord);
@@ -273,7 +273,7 @@ float4 ZigZag(float4 pos : SV_Position, float2 texcoord : TEXCOORD0) : SV_TARGET
         {
             color = tex2D(samplerColor, tc);
             if(render_type)
-                BLENDING_LERP(render_type, base, color, percentSquared, 1);
+                color.rgb = ComHeaders::Blending::Blend(render_type, base, color, percentSquared);
         }
         
         
@@ -288,18 +288,6 @@ float4 ZigZag(float4 pos : SV_Position, float2 texcoord : TEXCOORD0) : SV_TARGET
         if(mask_front < depth_threshold)
             color = tex2D(samplerColor, texcoord);
     }
-    
-    // color = tex2D(samplerColor, tc);
-        
-    // if(depth >= min_depth && dist < radius && render_type)
-    //     BLENDING_LERP(render_type, base, color, min(abs(theta), 1));
-    
-    // }
-    // else
-    // {
-    //     color = tex2D(samplerColor, texcoord);
-    // }
-    
 
     return color;
 }
