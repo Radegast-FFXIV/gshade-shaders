@@ -107,6 +107,15 @@ BLENDING_COMBO(
     0
 );
 
+uniform float blending_amount <
+    ui_type = "slider";
+    ui_label = "Blending Amount";
+    ui_category = "Blending";
+    ui_tooltip = "Adjusts the blending amount.";
+    ui_min = 0.0;
+    ui_max = 1.0;
+> = 1.0;
+
 uniform float anim_rate <
     source = "timer";
 >;
@@ -187,7 +196,7 @@ float4 PBDistort(float4 pos : SV_Position, float2 texcoord : TEXCOORD0) : SV_TAR
 
     tc.x *= ar;
 
-float out_depth;
+    float out_depth;
     bool inDepthBounds;
     
     if (depth_mode == 0) {
@@ -199,6 +208,7 @@ float out_depth;
         inDepthBounds = out_depth <= depth_threshold;
     }
        
+    float blending_factor = lerp(0, 1 - percent, blending_amount);
     if (tension_radius >= dist && inDepthBounds)
     {
         if(use_offset_coords){
@@ -210,7 +220,7 @@ float out_depth;
             color = tex2D(samplerColor, tc);
 
         if(render_type)
-            color.rgb = ComHeaders::Blending::Blend(render_type, base, color, 1 - percent);
+            color.rgb = ComHeaders::Blending::Blend(render_type, base, color, blending_factor);
     }
     else {
         color = tex2D(samplerColor, texcoord);
