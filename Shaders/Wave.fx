@@ -203,7 +203,7 @@ float4 Wave(float4 pos : SV_Position, float2 texcoord : TEXCOORD0) : SV_TARGET
     else
         blending_factor = blending_amount;
     
-    color.rgb = ComHeaders::Blending::Blend(render_type, base, color, blending_factor);
+    color.rgb = ComHeaders::Blending::Blend(render_type, base.rgb, color.rgb, blending_factor);
 
 
     float out_depth;
