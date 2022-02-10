@@ -219,7 +219,7 @@ float4 Wave(float4 pos : SV_Position, float2 texcoord : TEXCOORD0) : SV_TARGET
     if(inDepthBounds){
         color = tex2D(samplerColor, tc);
     
-        color.rgb = ComHeaders::Blending::Blend(render_type, base, color, blending_factor);
+        color.rgb = ComHeaders::Blending::Blend(render_type, base.rgb, color.rgb, blending_factor);
     }
     else
     {
@@ -234,7 +234,7 @@ float4 Wave(float4 pos : SV_Position, float2 texcoord : TEXCOORD0) : SV_TARGET
     return color;
 }
 
-technique Wave
+technique Wave<ui_label="Wave";>
 {
     pass p0
     {
